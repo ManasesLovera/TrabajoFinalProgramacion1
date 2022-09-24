@@ -6,24 +6,24 @@ using namespace std;
 
 class Client {
     private:
-        short ID;
+        string ID;
         string name;
         int balance;
     public:
-        Client(short ID, string Name, int Balance){
+        Client(string ID, string Name, int Balance){
             this->ID = ID;
             this->name = Name;
             this->balance = balance;
         }
         //Getters
-        short getID(){
-        return ID;
+        string getID(){
+        return this->ID;
         }
         string getName(){
-            return name;
+            return this->name;
         }
         int getBalance(){
-            return balance;
+            return this->balance;
         }
 };
 class Call {
@@ -42,6 +42,15 @@ class Call {
         int minutes = 0;
         string name;
         short cost;
+        Call(string phone_number, string typeof_call, string location, string begin_time, int minutes, string name, short cost){
+            this->phone_number = phone_number;
+            this->typeof_call = typeof_call;
+            this->location = location;
+            this->begin_time = begin_time;
+            this->minutes = minutes;
+            this->name = name;
+            this->cost = cost;
+        }
 };
 class Centralita {
     public:
@@ -58,28 +67,16 @@ class Centralita {
 
 Centralita centralita;
 
-void add_clients(Centralita,vector<Client>&);
-
-//void show_last_registers();
-//void show_calls_by_location();
-void Menu();
-
-int main(){
-
-    Menu();
-
-    return 0;
-};
-
 void add_users(Centralita& central,vector<Client>& clients){
-    short ID;
+
+    string ID;
     string name;
     int balance;
     int amount_users;
-    cout<< "\nInserte la cantidad de usuarios: ";
-    cin >> amount_users;                                      // Pide una cantidad de usuarios a agregar
-    for(int i = 0; i < amount_users; i++){
+    cout<< "\nInserte la cantidad de usuarios: "; // Pide una cantidad de usuarios a agregar
+    cin >> amount_users; 
 
+    for(int i = 0; i < amount_users; i++){
         cout << "\nUsuario "<<clients.size()+1<<": "<<endl;
         cout << "Identificador: ";
         cin >> ID;                                              // Agrega los usuarios
@@ -89,12 +86,13 @@ void add_users(Centralita& central,vector<Client>& clients){
         cin >> balance;
         Client client(ID,name,balance);
         central.add_client(client);
+
     }
 }
 
 void add_calls(){
     int amount_calls, minutes,  balance, finalbal, option;
-	string phone_number, location, typeof_call, name;
+	string phone_number, location, typeof_call, name, begin_time;
 	float local=0.15, occidental=0.20, central=0.25, oriental=0.30, cost, time;
 	
 	cout << "\nInserte la hora: (formato 24 horas)";
@@ -110,13 +108,15 @@ void add_calls(){
 		}
 
     for(int j = 0; j < amount_calls; j++){
-        cout << "\nLlamada "<<centralita.calls.size()+j<<": "<<endl;
+        cout << "\nLlamada "<<centralita.calls.size()+j+1<<": "<<endl;
         cout << "\nNúmero de telefono: ";                 // Agrega las llamadas
         cin >> phone_number;
         cout << "Usuario: ";
         cin >> name;
 		cout << "Tipo de llamada (local/interprovincial): ";
         cin >> typeof_call;
+        cout << "Digite el tiempo de inicio: ";
+        cin >> begin_time;
         cout << "Digite duracion de la llamada (minutos): ";
         cin >> minutes;
         cout << "Digite su saldo actual: $";
@@ -150,45 +150,70 @@ void add_calls(){
                 cout<< "\nSu llamada ha sido guardada"<<endl;
                 cout << "\nSu nuevo saldo es de: $";
                 cout << finalbal<<endl;; 
-
-                Call cal;
-                centralita.add_call(cal);
             }
         }
+        Call cal(phone_number,typeof_call,location,begin_time,minutes,name,cost);
+        centralita.calls.push_back(cal);
     }
-
 }
 
 void show_users(){
     for(int i = 0; i < centralita.clients.size(); i++){
         cout << "\nUsuarios:"<<endl;
-        cout<< "Usuario: " <<centralita.clients[i].getName();
-        cout<<"Identificador: "<<centralita.clients[i].getID();
-        cout<<"Saldo: "<<centralita.clients[i].getBalance();
+        cout<< "\nUsuario: " <<centralita.clients[i].getName()<<endl;
+        cout<<"Identificador: "<<centralita.clients[i].getID()<<endl;
+        cout<<"Saldo: "<<centralita.clients[i].getBalance()<<endl;
 	}
 }
 
 void show_calls(){  //Registro de Llamada (mostrar llamadas)
     
-    cout<<":\n Mostrar  Llamadas:  "<<endl;
-    for (int i=0; i< centralita.calls.size(); i++){
+    int i = 0;
+    cout<<"\n Mostrar  Llamadas:  "<<endl;
+    for (Call c : centralita.calls){
         cout << "\nLlamada "<<i+1<<":"<<endl;
-        cout << "Numero de telefono:"<<centralita.calls[i].phone_number<<endl;
-        cout << "Tipo de llamada: "<<centralita.calls[i].typeof_call<<endl;
-        cout << "Tipo de llamada: "<<centralita.calls[i].location<<endl;
-        cout << "Tipo de llamada: "<<centralita.calls[i].begin_time<<endl;
-        cout << "Tipo de llamada: "<<centralita.calls[i].minutes<<endl;
-        cout << "Tipo de llamada: "<<centralita.calls[i].name<<endl;
-        cout << "Tipo de llamada: "<<centralita.calls[i].cost<<endl;     
+        cout << "Numero de telefono:"<<c.phone_number<<endl;
+        cout << "Tipo de llamada: "<<c.typeof_call<<endl;
+        cout << "Tipo de llamada: "<<c.location<<endl;
+        cout << "Tipo de llamada: "<<c.begin_time<<endl;
+        cout << "Tipo de llamada: "<<c.minutes<<endl;
+        cout << "Tipo de llamada: "<<c.name<<endl;
+        cout << "Tipo de llamada: "<<c.cost<<endl;  
+        i++;   
     }    
 }
 
-void show_last_registers(){
-    cout << "Working in progress..."<<endl;
+void show_last_registers(vector<Call>& calls){
+    cout << "\nEscribe la cantidad de los ultimos registros de llamada que quiere ver: "<<endl;
+    int amount;
+    cin >> amount;
+    int p = calls.size()-1; // Posicion del vector ubicado desde el ultimo elemento
+    for(int i = 0; i < amount; i++){
+        cout << "Numero de telefono: "<<calls[p].phone_number<<endl;
+        cout << "Tipo de llamada: "<<calls[p].typeof_call<<endl;
+        cout << "Ubicacion: "<<calls[p].location<<endl;
+        cout << "Usuario: "<<calls[p].name<<endl;
+        cout << "Tiempo de inicio: "<<calls[p].begin_time<<endl;
+        cout << "Minutos: "<<calls[p].minutes<<endl;
+        cout << "Precio: "<<calls[p].cost<<endl;
+        p--;
+    }
+
 }
 
-void show_calls_by_location(){
-    cout<< "Calls on THAT place"<<endl;
+void show_calls_by_location(vector<Call>& calls){
+    string location;
+    cout << "\nIngrese la ubicacion que quiere encontrar: ";
+    cin >> location;
+    for (Call call : calls){
+        if (call.location == location){
+            cout << "\nNombre: "<<call.name<<endl;
+            cout << "Numero de telefono: "<<call.phone_number<<endl;
+            cout << "Ubicacion: "<<call.location<<endl;
+            cout << "Costo llamada: "<<call.cost<<endl;
+            cout << "Inicio de llamada: "<<call.begin_time<<endl; 
+        }
+    }
 }
 
 void exit(){
@@ -197,7 +222,7 @@ void exit(){
 }
 
 void Menu(){
-    system("clear");
+    cout << "\n"<<endl;
     cout << "Menu:\n"<<endl;
     cout << "0. Salir" <<endl;
     cout << "1. Agregar usuarios" <<endl;
@@ -223,15 +248,15 @@ void Menu(){
             Menu();
             break;
         case 4:
-            //show_calls();
+            show_calls();
             Menu();
             break;
         case 5:
-            //show_last_registers();
+            show_last_registers(centralita.calls);
             Menu();
             break;
         case 6:
-            //show_calls_by_location();
+            show_calls_by_location(centralita.calls);
             Menu();
             break;
         case 0:
@@ -239,3 +264,10 @@ void Menu(){
             break;
     }
 }
+
+int main(){
+
+    Menu();
+
+    return 0;
+};

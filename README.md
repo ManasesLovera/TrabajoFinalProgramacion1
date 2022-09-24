@@ -5,5 +5,4 @@ Integrantes:
 	Manasés
 	Andres 
 	Oliver
-	Estifen
 	Michel
