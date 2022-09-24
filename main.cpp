@@ -56,13 +56,6 @@ class Centralita {
     public:
         vector<Client> clients;    //Esta es la centralita, contiene clientes y llamadas
         vector<Call> calls;
-        //Setters
-        void add_client(Client cl){
-            this->clients.push_back(cl);
-        }
-        void add_call(Call ca){
-            this->calls.push_back(ca);
-        }
 };
 
 Centralita centralita;
@@ -85,7 +78,7 @@ void add_users(Centralita& central,vector<Client>& clients){
         cout << "Saldo: ";
         cin >> balance;
         Client client(ID,name,balance);
-        central.add_client(client);
+        central.clients.push_back(client);
 
     }
 }
