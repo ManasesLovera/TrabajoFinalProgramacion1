@@ -54,7 +54,6 @@ class Centralita {
         void add_call(Call ca){
             this->calls.push_back(ca);
         }
-        //void show_clients(){}
 };
 
 Centralita centralita;
@@ -94,36 +93,94 @@ void add_users(Centralita& central,vector<Client>& clients){
 }
 
 void add_calls(){
-    int amount_calls;
+    int amount_calls, minutes,  balance, finalbal, option;
+	string phone_number, location, typeof_call, name;
+	float local=0.15, occidental=0.20, central=0.25, oriental=0.30, cost, time;
+	
+	cout << "\nInserte la hora: (formato 24 horas)";
+	cin >> time;
     cout << "\nInserte la cantidad de llamadas: ";
     cin >> amount_calls;                                // Pide la cantidad de llamadas a agregar
-    string phone_number, typeof_call, location,name;
+  
+    if (time>18){
+    	 local=0.5;
+		 occidental=0.10;
+		 central=0.10;
+		 oriental=0.10;	  
+		}
+
     for(int j = 0; j < amount_calls; j++){
         cout << "\nLlamada "<<centralita.calls.size()+j<<": "<<endl;
-        cout << "Numero de telefono: ";                 // Agrega las llamadas
+        cout << "\nNúmero de telefono: ";                 // Agrega las llamadas
         cin >> phone_number;
-        cout << "Tipo de llamada (local/interprovincial): ";
-        cin >> typeof_call;
-        if(typeof_call == "interprovincial"){
-            cout << "Region geografica (region occidental/region central/region oriental): ";
-            cin >> location;
-        }
         cout << "Usuario: ";
         cin >> name;
-        Call cal;
-        centralita.add_call(cal);
+		cout << "Tipo de llamada (local/interprovincial): ";
+        cin >> typeof_call;
+        cout << "Digite duracion de la llamada (minutos): ";
+        cin >> minutes;
+        cout << "Digite su saldo actual: $";
+        cin >> balance;  
+				
+        if(typeof_call == "interprovincial"){ 
+        cout << "Region geografica [1]Region occidental [2]region central [3]Region oriental " << endl;
+        cin >> option;
+
+            if(option==1){
+                cost = minutes*occidental;
+                finalbal= balance-cost;
+            }
+
+            if(option==2){
+                cost = minutes*central;
+                finalbal= balance-cost;
+            }
+
+            if(option==3){
+                cost = minutes*oriental;
+                finalbal= balance-cost;
+            } 
+            
+            if(cost>balance){
+                cout<<"Su saldo es insuficiente para relizar la llamada"<<endl;
+            }
+            else{
+                cout<< "Duracion llamada: " <<minutes<< " minutos";
+                cout<< "\nCosto llamada: $" <<cost<<endl;
+                cout<< "\nSu llamada ha sido guardada"<<endl;
+                cout << "\nSu nuevo saldo es de: $";
+                cout << finalbal<<endl;; 
+
+                Call cal;
+                centralita.add_call(cal);
+            }
+        }
     }
+
 }
 
 void show_users(){
-    cout << "\nUsuarios:"<<endl;
     for(int i = 0; i < centralita.clients.size(); i++){
-        cout << centralita.clients[i].getID()<< ": "<<centralita.clients[i].getName()<<" - Saldo: "<<centralita.clients[i].getBalance()<<endl;
-    }
+        cout << "\nUsuarios:"<<endl;
+        cout<< "Usuario: " <<centralita.clients[i].getName();
+        cout<<"Identificador: "<<centralita.clients[i].getID();
+        cout<<"Saldo: "<<centralita.clients[i].getBalance();
+	}
 }
 
-void show_calls(){
-    cout << "\nLlamadas:"<<endl;
+void show_calls(){  //Registro de Llamada (mostrar llamadas)
+    
+    cout<<":\n Mostrar  Llamadas:  "<<endl;
+    for (int i=0; i< centralita.calls.size(); i++){
+        cout << "\nLlamada "<<i+1<<":"<<endl;
+        cout << "Numero de telefono:"<<centralita.calls[i].phone_number<<endl;
+        cout << "Tipo de llamada: "<<centralita.calls[i].typeof_call<<endl;
+        cout << "Tipo de llamada: "<<centralita.calls[i].location<<endl;
+        cout << "Tipo de llamada: "<<centralita.calls[i].begin_time<<endl;
+        cout << "Tipo de llamada: "<<centralita.calls[i].minutes<<endl;
+        cout << "Tipo de llamada: "<<centralita.calls[i].name<<endl;
+        cout << "Tipo de llamada: "<<centralita.calls[i].cost<<endl;     
+    }    
 }
 
 void show_last_registers(){
@@ -158,11 +215,11 @@ void Menu(){
             Menu();
             break;
         case 2:
-            //add_calls();
+            add_calls();
             Menu();
             break;
         case 3:
-            //show_users();
+            show_users();
             Menu();
             break;
         case 4:
